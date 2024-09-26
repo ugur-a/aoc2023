@@ -1,8 +1,11 @@
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
+members = ["d01"]
 resolver = "2"
 
 [workspace.dependencies]
+anyhow = "1.0.89"
+test-case = "3.3.1"
 
 [profile.release]
 debug = true
