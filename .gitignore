@@ -1,0 +1,9 @@
+/target
+.direnv
+
+.vscode
+
+#flamegraph
+flamegraph.svg
+perf.data
+perf.data.old
