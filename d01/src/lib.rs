@@ -1,18 +1,33 @@
-use anyhow::Context;
+use core::{marker::PhantomData, str::FromStr};
 
-pub fn p1(file: &str) -> anyhow::Result<u32> {
-    let mut res = 0;
-    for line in file.lines() {
-        let first = line
+use anyhow::Context;
+use itertools::Itertools;
+
+struct WeirdNumber<P>(u32, PhantomData<P>);
+
+struct P1;
+impl FromStr for WeirdNumber<P1> {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let first = s
             .chars()
             .find_map(|c| c.to_digit(10))
             .context("no digits")?;
-        let second = line
+        let second = s
             .chars()
             .rev()
             .find_map(|c| c.to_digit(10))
             .context("only one digit")?;
-        res += 10 * first + second;
+        Ok(Self(10 * first + second, PhantomData))
+    }
+}
+
+pub fn p1(file: &str) -> anyhow::Result<u32> {
+    file.lines()
+        .map(WeirdNumber::<P1>::from_str)
+        .fold_ok(0, |acc, WeirdNumber(n, _)| acc + n)
+}
     }
     Ok(res)
 }
