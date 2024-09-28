@@ -8,6 +8,8 @@ edition = "2021"
 [dependencies]
 anyhow.workspace = true
 itertools.workspace = true
+libaoc.workspace = true
+nom.workspace = true
 
 [dev-dependencies]
 test-case.workspace = true
