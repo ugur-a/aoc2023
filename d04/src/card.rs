@@ -11,7 +11,6 @@ use nom::{
 };
 
 pub(crate) struct Card {
-    pub(crate) id: u32,
     pub(crate) winning_numbers: HashSet<u32>,
     pub(crate) your_numbers: HashSet<u32>,
 }
@@ -31,8 +30,7 @@ fn card(i: &str) -> IResult<&str, Card> {
             tag(": "),
             separated_pair(numbers, tag(" | "), numbers),
         ),
-        |(id, (winning_numbers, your_numbers))| Card {
-            id,
+        |(_id, (winning_numbers, your_numbers))| Card {
             winning_numbers,
             your_numbers,
         },
