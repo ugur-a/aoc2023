@@ -1,30 +1,59 @@
-use core::str::FromStr;
+use std::collections::HashSet;
 
-use crate::schematic::{Number, Schematic, Symbol};
+use crate::number::{parse_numbers, Number};
 
-impl Schematic {
-    fn part_numbers(&self) -> impl Iterator<Item = u32> + '_ {
-        self.numbers
-            .iter()
-            .filter(
-                |&&Number {
-                     start_pos: (start_x, start_y),
-                     len,
-                     ..
-                 }| {
-                    (start_x..start_x + len as usize)
-                        .map(|x| Symbol { pos: (x, start_y) })
-                        .any(|s| self.symbols.contains(&s))
-                },
-            )
-            .map(|n| n.value)
-    }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct Symbol {
+    pos: (usize, usize),
 }
 
 pub fn p1(file: &str) -> anyhow::Result<u32> {
-    let s = Schematic::from_str(file)?;
+    let height = file.lines().count();
+    let width = file.lines().next().unwrap().len();
 
-    let res = s.part_numbers().sum();
+    let symbols: HashSet<_> = file
+        .lines()
+        .enumerate()
+        .flat_map(|(y, line)| line.char_indices().map(move |(x, c)| ((x, y), c)))
+        .filter(|(_, c)| !c.is_ascii_digit() && *c != '.')
+        .flat_map(|((x, y), _)| {
+            std::iter::empty()
+                .chain((x > 0).then(|| Symbol { pos: (x - 1, y) }))
+                .chain((y > 0).then(|| Symbol { pos: (x, y - 1) }))
+                .chain((x < width - 1).then_some(Symbol { pos: (x + 1, y) }))
+                .chain((y < height - 1).then_some(Symbol { pos: (x, y + 1) }))
+                .chain((x > 0 && y > 0).then(|| Symbol {
+                    pos: (x - 1, y - 1),
+                }))
+                .chain((x > 0 && y < width - 1).then(|| Symbol {
+                    pos: (x - 1, y + 1),
+                }))
+                .chain((x < width - 1 && y > 0).then(|| Symbol {
+                    pos: (x + 1, y - 1),
+                }))
+                .chain((x < width - 1 && y < height - 1).then_some(Symbol {
+                    pos: (x + 1, y + 1),
+                }))
+        })
+        .collect();
+
+    let numbers = parse_numbers(file);
+
+    let res = numbers
+        .iter()
+        .filter(
+            |&&Number {
+                 start_pos: (start_x, start_y),
+                 len,
+                 ..
+             }| {
+                (start_x..start_x + len as usize)
+                    .map(|x| Symbol { pos: (x, start_y) })
+                    .any(|s| symbols.contains(&s))
+            },
+        )
+        .map(|n| n.value)
+        .sum();
 
     Ok(res)
 }
