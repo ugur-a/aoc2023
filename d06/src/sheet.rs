@@ -1,6 +1,6 @@
 pub(crate) struct Race {
-    pub(crate) time: u32,
-    pub(crate) distance: u32,
+    pub(crate) time: u64,
+    pub(crate) distance: u64,
 }
 
 impl Race {

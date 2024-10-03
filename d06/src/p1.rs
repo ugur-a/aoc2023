@@ -3,7 +3,7 @@ use core::str::FromStr;
 use libaoc::impl_from_str_from_nom_parser;
 use nom::{
     bytes::complete::tag,
-    character::complete::{newline, space1, u32},
+    character::complete::{newline, space1, u64},
     combinator::map,
     multi::separated_list1,
     sequence::{preceded, separated_pair, tuple},
@@ -14,14 +14,14 @@ use crate::sheet::Race;
 
 struct Sheet(Vec<Race>);
 
-fn times(i: &str) -> IResult<&str, Vec<u32>> {
-    preceded(tuple((tag("Time:"), space1)), separated_list1(space1, u32))(i)
+fn times(i: &str) -> IResult<&str, Vec<u64>> {
+    preceded(tuple((tag("Time:"), space1)), separated_list1(space1, u64))(i)
 }
 
-fn distances(i: &str) -> IResult<&str, Vec<u32>> {
+fn distances(i: &str) -> IResult<&str, Vec<u64>> {
     preceded(
         tuple((tag("Distance:"), space1)),
-        separated_list1(space1, u32),
+        separated_list1(space1, u64),
     )(i)
 }
 
