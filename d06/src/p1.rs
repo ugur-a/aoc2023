@@ -50,7 +50,7 @@ mod test {
     const REAL: &str = include_str!("../inputs/real.txt");
 
     #[test_case(EXAMPLE => 288)]
-    #[test_case[REAL => 512_295]]
+    #[test_case(REAL => 512_295)]
     fn test_p1(inp: &str) -> usize {
         p1(inp).unwrap()
     }

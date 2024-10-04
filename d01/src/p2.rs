@@ -61,7 +61,7 @@ mod test {
     const REAL: &str = include_str!("../inputs/real.txt");
 
     #[test_case(EXAMPLE => 281)]
-    #[test_case[REAL => 55413]]
+    #[test_case(REAL => 55413)]
     fn test_p2(inp: &str) -> u32 {
         p2(inp).unwrap()
     }
