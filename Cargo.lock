@@ -112,7 +112,7 @@ dependencies = [
 [[package]]
 name = "libaoc"
 version = "0.1.0"
-source = "git+https://github.com/ugur-a/libaoc#2f225c5b7f4b517ef2f5a0d53771217e4de77d17"
+source = "git+https://github.com/ugur-a/libaoc#42a3e401334e7bc4687194eec44557b47c19ebb1"
 dependencies = [
  "nom",
 ]
