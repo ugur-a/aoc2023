@@ -1,5 +1,25 @@
-pub fn p1(_file: &str) -> anyhow::Result<u32> {
-    todo!()
+use crate::map::{Map, MoveDirection};
+
+const START: &str = "AAA";
+const DESTINATION: &str = "ZZZ";
+
+pub fn p1(file: &str) -> anyhow::Result<u32> {
+    let Map { moves, nodes } = Map::try_from(file)?;
+
+    let mut node = START;
+    let mut nmoves = 0;
+    for moove in moves.0.into_iter().cycle() {
+        if node == DESTINATION {
+            break;
+        }
+        let nexts = &nodes.0[node];
+        node = match moove {
+            MoveDirection::Left => nexts.left,
+            MoveDirection::Right => nexts.right,
+        };
+        nmoves += 1;
+    }
+    Ok(nmoves)
 }
 
 #[cfg(test)]
@@ -11,8 +31,8 @@ mod test {
     const REAL: &str = include_str!("../inputs/real.txt");
 
     #[test_case(EXAMPLE1 => 2)]
-    #[test_case(EXAMPLE2 => 2)]
-    #[test_case(REAL => ignore)]
+    #[test_case(EXAMPLE2 => 6)]
+    #[test_case(REAL => 11309)]
     fn test_p1(inp: &str) -> u32 {
         p1(inp).unwrap()
     }
