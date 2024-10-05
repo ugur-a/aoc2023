@@ -1,5 +1,16 @@
-pub fn p2(_file: &str) -> anyhow::Result<u32> {
-    todo!()
+use core::str::FromStr;
+
+use crate::oasis::{OasisReport, ValueHistory};
+
+pub fn p2(file: &str) -> anyhow::Result<i32> {
+    let report = OasisReport::from_str(file)?;
+
+    let res = report
+        .0
+        .into_iter()
+        .map(ValueHistory::extrapolate_back)
+        .sum();
+    Ok(res)
 }
 
 #[cfg(test)]
@@ -9,9 +20,9 @@ mod test {
     const EXAMPLE: &str = include_str!("../inputs/example.txt");
     const REAL: &str = include_str!("../inputs/real.txt");
 
-    #[test_case(EXAMPLE => ignore)]
-    #[test_case(REAL => ignore)]
-    fn test_p2(inp: &str) -> u32 {
+    #[test_case(EXAMPLE => 2)]
+    #[test_case(REAL => 905)]
+    fn test_p2(inp: &str) -> i32 {
         p2(inp).unwrap()
     }
 }

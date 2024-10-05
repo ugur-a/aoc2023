@@ -9,7 +9,7 @@ use nom::{
 pub(crate) struct ValueHistory(Vec<i32>);
 
 impl ValueHistory {
-    pub(crate) fn extrapolate(self) -> i32 {
+    fn derivatives(self) -> Vec<Vec<i32>> {
         let mut curr_derivative = self.0;
         let mut derivatives = vec![];
         while !curr_derivative.iter().all(|n| n == &0) {
@@ -21,9 +21,20 @@ impl ValueHistory {
             derivatives.push(std::mem::replace(&mut curr_derivative, next_derivative));
         }
         derivatives
+    }
+
+    pub(crate) fn extrapolate(self) -> i32 {
+        self.derivatives()
             .into_iter()
             .map(|v| *v.last().expect("enough data points to extrapolate"))
             .sum()
+    }
+
+    pub(crate) fn extrapolate_back(self) -> i32 {
+        self.derivatives()
+            .into_iter()
+            .map(|v| *v.first().expect("enough data points to extrapolate"))
+            .rfold(0, |acc, n| n - acc)
     }
 }
 
