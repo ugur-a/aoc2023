@@ -9,6 +9,7 @@ edition = "2021"
 anyhow.workspace = true
 libaoc.workspace = true
 nom.workspace = true
+num = "0.4.3"
 
 [dev-dependencies]
 test-case.workspace = true
