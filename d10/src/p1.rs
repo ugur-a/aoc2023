@@ -1,5 +1,12 @@
-pub fn p1(_file: &str) -> anyhow::Result<u32> {
-    todo!()
+use core::str::FromStr;
+
+use crate::map::Map;
+
+pub fn p1(file: &str) -> anyhow::Result<usize> {
+    let map = Map::from_str(file)?;
+
+    let res = map.find_loop().len() / 2;
+    Ok(res)
 }
 
 #[cfg(test)]
@@ -12,8 +19,8 @@ mod test {
 
     #[test_case(EXAMPLE1 => 4)]
     #[test_case(EXAMPLE2 => 8)]
-    #[test_case(REAL => ignore)]
-    fn test_p1(inp: &str) -> u32 {
+    #[test_case(REAL => 6806)]
+    fn test_p1(inp: &str) -> usize {
         p1(inp).unwrap()
     }
 }
