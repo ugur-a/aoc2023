@@ -140,8 +140,10 @@ dependencies = [
 [[package]]
 name = "libaoc"
 version = "0.1.0"
-source = "git+https://github.com/ugur-a/libaoc#42a3e401334e7bc4687194eec44557b47c19ebb1"
+source = "git+https://github.com/ugur-a/libaoc#61f428b51fd72e08670346fd31f497c30e0a80ab"
 dependencies = [
+ "anyhow",
+ "itertools",
  "nom",
 ]
 
@@ -242,9 +244,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.86"
+version = "1.0.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
+checksum = "b3e4daa0dcf6feba26f985457cdf104d4b4256fc5a09547140f3631bb076b19a"
 dependencies = [
  "unicode-ident",
 ]
