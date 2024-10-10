@@ -1,5 +1,41 @@
-pub fn p1(_file: &str) -> anyhow::Result<u32> {
-    todo!()
+use core::str::FromStr;
+
+use itertools::Itertools;
+use libaoc::points::Point2D;
+
+type Pos = Point2D<usize>;
+
+use crate::{Distance, Image};
+
+struct P1;
+
+impl Distance for Image<P1> {
+    type Point = Pos;
+    fn distance(&self, Point2D(x1, y1): Pos, Point2D(x2, y2): Pos) -> usize {
+        let (x1, x2) = (core::cmp::min(x1, x2), core::cmp::max(x1, x2));
+        let dx = (x2 - x1)
+            + (x1 + 1..x2)
+                .filter(|x| self.expanded_cols.contains(x))
+                .count();
+
+        let (y1, y2) = (core::cmp::min(y1, y2), core::cmp::max(y1, y2));
+        let dy = (y2 - y1)
+            + (y1 + 1..y2)
+                .filter(|y| self.expanded_rows.contains(y))
+                .count();
+
+        dx + dy
+    }
+}
+
+pub fn p1(file: &str) -> anyhow::Result<usize> {
+    let img = Image::<P1>::from_str(file)?;
+    let res = img
+        .galaxies()
+        .combinations(2)
+        .map(|g_pair| img.distance(g_pair[0], g_pair[1]))
+        .sum();
+    Ok(res)
 }
 
 #[cfg(test)]
@@ -10,8 +46,8 @@ mod test {
     const REAL: &str = include_str!("../inputs/real.txt");
 
     #[test_case(EXAMPLE => 374)]
-    #[test_case(REAL => ignore)]
-    fn test_p1(inp: &str) -> u32 {
+    #[test_case(REAL => 9_522_407)]
+    fn test_p1(inp: &str) -> usize {
         p1(inp).unwrap()
     }
 }
