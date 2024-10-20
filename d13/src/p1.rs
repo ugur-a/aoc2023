@@ -1,9 +1,16 @@
 use core::str::FromStr;
 
-use crate::pattern::PatternNotes;
+use crate::pattern::{AreMirrorOpposites, PatternNotes, Point};
 
+struct P1;
+
+impl AreMirrorOpposites<P1> for &[Vec<Point>] {
+    fn are_mirror_opposites(self, other: Self) -> bool {
+        core::iter::zip(self.iter().rev(), other).all(|(a, b)| a == b)
+    }
+}
 pub fn p1(file: &str) -> anyhow::Result<usize> {
-    let notes = PatternNotes::from_str(file)?;
+    let notes = PatternNotes::<P1>::from_str(file)?;
 
     Ok(notes.summarize())
 }

@@ -1,5 +1,6 @@
+use core::marker::PhantomData;
+
 use anyhow::bail;
-use libaoc::impl_from_str_from_nom_parser;
 use nom::{
     bytes::complete::tag,
     character::complete::{anychar, newline},
@@ -27,14 +28,30 @@ fn point(i: &str) -> IResult<&str, Point> {
     map_res(anychar, Point::try_from)(i)
 }
 
-fn pattern(i: &str) -> IResult<&str, Pattern> {
-    map(separated_list1(newline, many1(point)), Pattern)(i)
+fn pattern<P>(i: &str) -> IResult<&str, Pattern<P>> {
+    map(separated_list1(newline, many1(point)), |p| {
+        Pattern(p, PhantomData)
+    })(i)
 }
 
-impl_from_str_from_nom_parser!(pattern, Pattern);
+impl<P> core::str::FromStr for Pattern<P> {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (remaining, object) = pattern(s).map_err(|e| anyhow::anyhow!("{e}"))?;
+        anyhow::ensure!(remaining.is_empty() || remaining == "\n");
+        Ok(object)
+    }
+}
 
-fn pattern_notes(i: &str) -> IResult<&str, PatternNotes> {
+fn pattern_notes<P>(i: &str) -> IResult<&str, PatternNotes<P>> {
     map(separated_list1(tag("\n\n"), pattern), PatternNotes)(i)
 }
 
-impl_from_str_from_nom_parser!(pattern_notes, PatternNotes);
+impl<P> core::str::FromStr for PatternNotes<P> {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (remaining, object) = pattern_notes(s).map_err(|e| anyhow::anyhow!("{e}"))?;
+        anyhow::ensure!(remaining.is_empty() || remaining == "\n");
+        Ok(object)
+    }
+}
