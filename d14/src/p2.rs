@@ -8,9 +8,13 @@ const N_CYCLES: usize = 1_000_000_000;
 impl Platform {
     fn cycle(&mut self) {
         self.tilt_north();
+        // eprintln!("north:\n{self}");
         self.tilt_west();
+        // eprintln!("west:\n{self}");
         self.tilt_south();
+        // eprintln!("south:\n{self}");
         self.tilt_east();
+        // eprintln!("eaast:\n{self}\n");
     }
 }
 
@@ -21,10 +25,12 @@ pub fn p2(file: &str) -> anyhow::Result<usize> {
 
     let mut yet_to_run = None;
     for i in 0..N_CYCLES {
+        // eprintln!("cycle {i}:");
         p.cycle();
 
         if let Some(j) = states.insert(p.clone(), i) {
-            eprintln!("cycle found: {j}->{i}");
+            // eprintln!("cycle found: {j}->{i}");
+
             // let s(i) := state after round i
             // then:
             // we're in this condition
