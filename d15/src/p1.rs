@@ -1,9 +1,4 @@
-fn hash(s: &str) -> u32 {
-    s.chars()
-        .map(|c| c as u32)
-        .inspect(|n| eprintln!("{} => {n}", *n as u8 as char))
-        .fold(0, |hash, c| ((hash + c) * 17) % 256)
-}
+use crate::hash;
 
 pub fn p1(file: &str) -> u32 {
     file.strip_suffix('\n').unwrap().split(',').map(hash).sum()
