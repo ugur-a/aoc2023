@@ -32,6 +32,12 @@ struct Beam {
 pub(crate) struct Contraption(Map2D<MaybeMirror>);
 
 impl Contraption {
+    pub(crate) fn width(&self) -> usize {
+        self.0.width()
+    }
+    pub(crate) fn height(&self) -> usize {
+        self.0.height()
+    }
     pub(crate) fn shine(&self) -> usize {
         let b = Beam {
             pos: Point2D::default(),
@@ -47,8 +53,8 @@ impl Contraption {
             let pos = match move_direction {
                 Direction::Left => (x > 0).then(|| Point2D(x - 1, y)),
                 Direction::Up => (y > 0).then(|| Point2D(x, y - 1)),
-                Direction::Right => (x + 1 < self.0.width()).then_some(Point2D(x + 1, y)),
-                Direction::Down => (y + 1 < self.0.height()).then_some(Point2D(x, y + 1)),
+                Direction::Right => (x + 1 < self.width()).then_some(Point2D(x + 1, y)),
+                Direction::Down => (y + 1 < self.height()).then_some(Point2D(x, y + 1)),
             };
 
             pos.map(|pos| Beam {
