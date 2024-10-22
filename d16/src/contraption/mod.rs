@@ -33,6 +33,14 @@ pub(crate) struct Contraption(Map2D<MaybeMirror>);
 
 impl Contraption {
     pub(crate) fn shine(&self) -> usize {
+        let b = Beam {
+            pos: Point2D::default(),
+            direction: Direction::Right,
+        };
+        self.shine_from(b)
+    }
+
+    pub(crate) fn shine_from(&self, start_beam: Beam) -> usize {
         let try_move = |beam: Beam, move_direction| {
             let Point2D(x, y) = beam.pos;
 
@@ -49,14 +57,8 @@ impl Contraption {
             })
         };
 
-        let init_pos = Point2D::default();
-        let beam = Beam {
-            pos: init_pos,
-            direction: Direction::Right,
-        };
-
-        let mut beams = vec![beam];
-        let mut visited = HashSet::from([beam]);
+        let mut beams = vec![start_beam];
+        let mut visited = HashSet::from([start_beam]);
         while !beams.is_empty() {
             let mut new_beams = vec![];
 
