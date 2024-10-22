@@ -206,7 +206,7 @@ dependencies = [
 [[package]]
 name = "libaoc"
 version = "0.1.0"
-source = "git+https://github.com/ugur-a/libaoc#61f428b51fd72e08670346fd31f497c30e0a80ab"
+source = "git+https://github.com/ugur-a/libaoc#294f6be291fcbf35a58d31a448b7e95cdb47cc3f"
 dependencies = [
  "anyhow",
  "itertools",
