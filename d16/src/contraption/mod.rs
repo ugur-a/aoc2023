@@ -16,7 +16,7 @@ enum MaybeMirror {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum Direction {
+pub(crate) enum Direction {
     Up,
     Right,
     Down,
@@ -24,9 +24,9 @@ enum Direction {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct Beam {
-    pos: Pos,
-    direction: Direction,
+pub(crate) struct Beam {
+    pub(crate) pos: Pos,
+    pub(crate) direction: Direction,
 }
 
 pub(crate) struct Contraption(Map2D<MaybeMirror>);
