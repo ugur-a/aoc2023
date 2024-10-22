@@ -1,5 +1,11 @@
-pub fn p1(_file: &str) -> anyhow::Result<usize> {
-    todo!()
+use core::str::FromStr;
+
+use crate::contraption::Contraption;
+
+pub fn p1(file: &str) -> anyhow::Result<usize> {
+    let c = Contraption::from_str(file)?;
+
+    Ok(c.shine())
 }
 
 #[cfg(test)]
@@ -9,7 +15,7 @@ mod test {
     const REAL: &str = include_str!("../inputs/real.txt");
 
     #[test_case(EXAMPLE => 46)]
-    #[test_case(REAL => ignore)]
+    #[test_case(REAL => 8901)]
     fn p1(inp: &str) -> usize {
         super::p1(inp).unwrap()
     }
