@@ -37,6 +37,11 @@ impl Crucible {
 
         let mut successors = Vec::with_capacity(3);
 
+        // workaround to include the case where the crucible starts looking down
+        if pos == Point2D::default() {
+            successors.push((Self::new(pos, Direction::Down, 0), 0));
+        }
+
         // turn
         for d in [direction.turn_right(), direction.turn_left()] {
             if let Some(p) = map.0.try_go(pos, d) {
