@@ -15,24 +15,24 @@ type Pos = Point2D<usize>;
 struct Crucible {
     pos: Pos,
     direction: Direction,
-    moves_till_turn: u8,
+    moves_since_turn: u8,
 }
 
 const MAX_MOVES_TILL_TURN: u8 = 3;
 
 impl Crucible {
-    fn new(pos: Pos, direction: Direction, moves_till_turn: u8) -> Self {
+    fn new(pos: Pos, direction: Direction, moves_since_turn: u8) -> Self {
         Self {
             pos,
             direction,
-            moves_till_turn,
+            moves_since_turn,
         }
     }
     fn successors(&self, map: &Map) -> Vec<(Self, usize)> {
         let &Crucible {
             pos,
             direction,
-            moves_till_turn,
+            moves_since_turn,
         } = self;
 
         let mut successors = Vec::with_capacity(3);
@@ -41,15 +41,15 @@ impl Crucible {
         for d in [direction.turn_right(), direction.turn_left()] {
             if let Some(p) = map.0.try_go(pos, d) {
                 let cost = map.0[p] as usize;
-                successors.push((Crucible::new(p, d, MAX_MOVES_TILL_TURN - 1), cost));
+                successors.push((Crucible::new(p, d, 1), cost));
             }
         }
 
         // continue straight
-        if moves_till_turn > 0 {
+        if moves_since_turn < MAX_MOVES_TILL_TURN {
             if let Some(p) = map.0.try_go(pos, direction) {
                 let cost = map.0[p] as usize;
-                successors.push((Crucible::new(p, direction, moves_till_turn - 1), cost));
+                successors.push((Crucible::new(p, direction, moves_since_turn + 1), cost));
             }
         }
 
