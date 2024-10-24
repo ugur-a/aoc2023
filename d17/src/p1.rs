@@ -28,6 +28,38 @@ impl Crucible {
             moves_till_turn,
         }
     }
+    fn successors(&self, map: &Map) -> Vec<(Self, usize)> {
+        let &Crucible {
+            pos,
+            direction,
+            moves_till_turn,
+        } = self;
+
+        let mut successors = Vec::with_capacity(3);
+
+        // turn
+        for d in [direction.turn_right(), direction.turn_left()] {
+            if let Some(p) = map.0.try_go(pos, d) {
+                let cost = map.0[p] as usize;
+                successors.push((Crucible::new(p, d, MAX_MOVES_TILL_TURN - 1), cost));
+            }
+        }
+
+        // continue straight
+        if moves_till_turn > 0 {
+            if let Some(p) = map.0.try_go(pos, direction) {
+                let cost = map.0[p] as usize;
+                successors.push((Crucible::new(p, direction, moves_till_turn - 1), cost));
+            }
+        }
+
+        // eprintln!("\nsucc({self:?}):");
+        // for s in &successors {
+        //     eprintln!(" {s:?}");
+        // }
+
+        successors
+    }
 }
 
 pub fn p1(file: &str) -> anyhow::Result<usize> {
@@ -38,36 +70,7 @@ pub fn p1(file: &str) -> anyhow::Result<usize> {
 
     let (_path, cost) = astar::astar(
         &start,
-        |_c @ &Crucible {
-             pos,
-             direction,
-             moves_till_turn,
-         }| {
-            let mut successors = Vec::with_capacity(3);
-
-            // turn
-            for d in [direction.turn_right(), direction.turn_left()] {
-                if let Some(p) = map.0.try_go(pos, d) {
-                    let cost = map.0[p] as usize;
-                    successors.push((Crucible::new(p, d, MAX_MOVES_TILL_TURN - 1), cost));
-                }
-            }
-
-            // continue straight
-            if moves_till_turn > 0 {
-                if let Some(p) = map.0.try_go(pos, direction) {
-                    let cost = map.0[p] as usize;
-                    successors.push((Crucible::new(p, direction, moves_till_turn - 1), cost));
-                }
-            }
-
-            // eprintln!("\nsucc({c:?}):");
-            // for s in &successors {
-            //     eprintln!("    {s:?}");
-            // }
-
-            successors
-        },
+        |c| c.successors(&map),
         |c| c.pos.manhattan_distance(dest_pos),
         |c| c.pos == dest_pos,
     )
