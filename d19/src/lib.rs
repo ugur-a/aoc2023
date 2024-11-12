@@ -39,15 +39,6 @@ enum Cmp {
     Greater,
 }
 
-impl Cmp {
-    fn into_fn(self) -> impl Fn(&u32, &u32) -> bool {
-        match self {
-            Self::Less => u32::lt,
-            Self::Greater => u32::gt,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Destination<'a> {
     Accept,
@@ -61,24 +52,6 @@ struct Rule<'a> {
     cmp: Cmp,
     value: u32,
     dest: Destination<'a>,
-}
-
-impl Rule<'_> {
-    fn apply_at(&self, part: &Part) -> Option<Destination> {
-        let Rule {
-            category,
-            cmp,
-            value,
-            dest,
-        } = self;
-
-        let category_value = part.category_value(*category);
-        if cmp.into_fn()(&category_value, value) {
-            Some(*dest)
-        } else {
-            None
-        }
-    }
 }
 
 struct Workflow<'a> {
@@ -118,43 +91,6 @@ impl<'a> Workflows<'a> {
 
         Self {
             inner: workflows_map,
-        }
-    }
-
-    fn is_accepted(&self, part: &Part) -> bool {
-        matches!(self.consider(part), Destination::Accept)
-    }
-
-    fn consider(&self, part: &Part) -> Destination {
-        self.consider_inner(part, "in")
-    }
-
-    fn consider_inner(&self, part: &Part, workflow_name: &str) -> Destination {
-        let WorkflowInner {
-            rules,
-            last_rule: last,
-        } = &self.inner[workflow_name];
-
-        for rule in rules {
-            match rule.apply_at(part) {
-                None => {
-                    // rule doesn't apply
-                    continue;
-                }
-                Some(Destination::Workflow(wf_name)) => {
-                    // send to another workflow
-                    return self.consider_inner(part, wf_name);
-                }
-                Some(dest) => return dest,
-            }
-        }
-
-        match *last {
-            Destination::Workflow(wf_name) => {
-                // send to another workflow
-                self.consider_inner(part, wf_name)
-            }
-            dest => dest,
         }
     }
 }
