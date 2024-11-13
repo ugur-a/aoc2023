@@ -1,3 +1,4 @@
+use core::ops::Index;
 use std::collections::HashMap;
 
 pub mod p1;
@@ -12,13 +13,14 @@ struct Part {
     s: u32,
 }
 
-impl Part {
-    fn category_value(&self, category: Category) -> u32 {
-        match category {
-            Category::X => self.x,
-            Category::M => self.m,
-            Category::A => self.a,
-            Category::S => self.s,
+impl Index<&Category> for Part {
+    type Output = u32;
+    fn index(&self, category: &Category) -> &Self::Output {
+        match *category {
+            Category::X => &self.x,
+            Category::M => &self.m,
+            Category::A => &self.a,
+            Category::S => &self.s,
         }
     }
 }
