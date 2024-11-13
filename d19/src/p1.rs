@@ -30,10 +30,6 @@ impl Rule<'_> {
 }
 
 impl Workflows<'_> {
-    fn is_accepted(&self, part: &Part) -> bool {
-        matches!(self.consider(part), Destination::Accept)
-    }
-
     fn consider(&self, part: &Part) -> Destination {
         self.consider_inner(part, "in")
     }
@@ -80,7 +76,7 @@ pub fn p1(file: &str) -> anyhow::Result<u32> {
 
     let res = parts
         .into_iter()
-        .filter(|p| workflows.is_accepted(p))
+        .filter(|p| matches!(workflows.consider(p), Destination::Accept))
         .map(|Part { x, m, a, s }| x + m + a + s)
         .sum();
     Ok(res)
